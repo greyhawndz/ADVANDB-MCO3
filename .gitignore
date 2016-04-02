@@ -10,3 +10,6 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+/ADVANDB-MCO3/nbproject/private/
+/ADVANDB-MCO3/build/
+/ADVANDB-MCO3/dist/
