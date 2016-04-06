@@ -112,7 +112,7 @@ public class MainView extends JFrame {
         iso.add(readCom);
         iso.add(readRe);
         iso.add(serial);
-        readUn.setSelected(true);
+        serial.setSelected(true);
         
         
         queryPanel.setBorder(new EmptyBorder(10,10,10,10));
