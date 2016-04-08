@@ -6,7 +6,6 @@
 package Controller.Transaction;
 
 import Controller.DBConnector;
-import Controller.QueryHandler;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -45,12 +44,26 @@ public class Transaction {
     public boolean closeTransaction() {
         boolean committed = false;
         try {
+            
             connection.commit();
             committed = true;
-            // transfer temporary log into permanent log
+            // unlock tables
+            // update log
+            // send data to other database
             connection.close();
         } catch (SQLException ex) {
-            Logger.getLogger(Transaction.class.getName()).log(Level.SEVERE, null, ex);
+            try {
+                connection.rollback();
+                Logger.getLogger(Transaction.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex1) {
+                Logger.getLogger(Transaction.class.getName()).log(Level.SEVERE, null, ex1);
+            }
+        } finally {
+            try {
+                connection.rollback();
+            } catch (SQLException ex1) {
+                Logger.getLogger(Transaction.class.getName()).log(Level.SEVERE, null, ex1);
+            }
         }
         return committed;
     }
@@ -60,12 +73,17 @@ public class Transaction {
         try {
             Statement stmt = connection.createStatement();
             if(query.contains("select")) {
+                ResultSet result = stmt.executeQuery(query);
                 //set result in table
-                ResultSet rs = stmt.getResultSet();
-            } else if(query.contains("update") || query.contains("insert into")) {
+                table = new JTable();
+                table.setModel(DbUtils.resultSetToTableModel(result));
+            } else if(query.contains("update")) {
                 // show number of rows updated
-                int update = stmt.getUpdateCount();
-                // write in temporary log
+                int update = stmt.executeUpdate(query);
+                // write in log
+            } else if(query.contains("insert into")) {
+                int insert = stmt.executeUpdate(query);
+                // write in log
             } else {
                 // error due to invalid statement
             }
@@ -79,6 +97,12 @@ public class Transaction {
     public static void setNode(int node){
         switch(node){
            //Use connect.setCatalog()
+            case 1: 
+                break;
+            case 2: 
+                break;
+            case 3:
+                break;
         }
     }
     
