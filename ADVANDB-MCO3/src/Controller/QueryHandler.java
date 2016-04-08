@@ -20,7 +20,7 @@ import javax.swing.table.DefaultTableModel;
  * @author WilliamPC
  */
 public class QueryHandler {
-   
+   private static final String ip = "";
     
     
     public static void OnNotification(int index, int select) throws SQLException{
