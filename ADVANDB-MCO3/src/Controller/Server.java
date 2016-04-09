@@ -14,6 +14,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -54,12 +55,16 @@ public class Server implements Runnable {
                 in = new ObjectInputStream(socket.getInputStream());
                 try {
                     object = (GenericObject) in.readObject();
+                    object.setIp(socket.getInetAddress());
                     
-                    if(object == null){
-                        System.out.println("object is null");
-                    }
+                    System.out.println("received object" +object.getQuery());
                     receiver = new Receiver(object);
-                    //receiver.UnpackObject();
+                    try {
+                        receiver.UnpackObject();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    socket.close();
                 } catch (ClassNotFoundException ex) {
                     Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
                 }

@@ -14,6 +14,6 @@ public enum ValidAction {
     END_TRANSACTION,
     SET_NODE,
     SET_ISOLATION_LEVEL,
-    READ,
-    WRITE
+    QUERY,
+    READ
 }

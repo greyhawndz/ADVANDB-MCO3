@@ -6,8 +6,12 @@
 package Controller.Transaction;
 
 import Controller.DBConnector;
+import Controller.NodeClient;
 import Helper.IsolationLevel;
 import Helper.NodeType;
+import Helper.ValidAction;
+import Model.GenericObject;
+import com.sun.rowset.CachedRowSetImpl;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,7 +19,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.sql.rowset.CachedRowSet;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 import net.proteanit.sql.DbUtils;
 
 /**
@@ -23,14 +29,15 @@ import net.proteanit.sql.DbUtils;
  * @author WilliamPC
  */
 public class Transaction {
-    private static final String ipPalawan = "";
-    private static final String ipCentral = "";
-    private static final String ipMarinduque = "";
+    public static final String ipPalawan = "";
+    public static final String ipCentral = "";
+    public static final String ipMarinduque = "";
     private DBConnector connector;
     private Connection connection;
     private ResultSet result;
     private PreparedStatement statement;
-    private JTable table;
+    private NodeClient client;
+    private Thread clientThread;
     
     public Transaction(String dbName){
         connector = DBConnector.getInstance(dbName);
@@ -74,15 +81,25 @@ public class Transaction {
         return committed;
     }
     
-    public void ProcessQuery(String query){
-        query = query.toLowerCase();
+    public void ProcessQuery(GenericObject object){
+        String query = object.getQuery().toLowerCase();
         try {
             statement = connection.prepareStatement(query);
             if(query.contains("select")) {
                 ResultSet result = statement.executeQuery(query);
+              /*  result.beforeFirst();
+                if(!result.next()){
+                    System.out.println("walang laman");
+                }*/
                 //set result in table
-                table = new JTable();
-                table.setModel(DbUtils.resultSetToTableModel(result));
+                object.setAction(ValidAction.READ);
+                System.out.println("process read");
+                CachedRowSet cRow = new CachedRowSetImpl();
+                cRow.populate(result);
+                object.setcRow(cRow);
+                client = new NodeClient(object.getIp().toString().substring(1), object);
+                clientThread = new Thread(client);
+                clientThread.start();
             } else if(query.contains("update")) {
                 // show number of rows updated
                 int update = statement.executeUpdate(query);
@@ -119,7 +136,9 @@ public class Transaction {
                 case SERIALIZABLE: connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
                     break;
                 default: connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+                    
             }
+            System.out.println("Isolation set to " +iso);
         } catch (SQLException ex) {
             Logger.getLogger(Transaction.class.getName()).log(Level.SEVERE, null, ex);
         }

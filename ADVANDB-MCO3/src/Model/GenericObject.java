@@ -5,10 +5,15 @@
  */
 package Model;
 
+import Helper.IsolationLevel;
 import Helper.NodeType;
 import Helper.ValidAction;
 import java.io.Serializable;
+import java.net.InetAddress;
 import java.sql.ResultSet;
+import java.util.List;
+import javax.sql.rowset.CachedRowSet;
+
 
 /**
  *
@@ -17,19 +22,13 @@ import java.sql.ResultSet;
 public class GenericObject implements Serializable {
     
     private NodeType database;
+    private InetAddress ip;
     private String query;
     private boolean updated;
     private ValidAction action;
     private String dbName;
-    private ResultSet rs = null;
-
-    public ResultSet getRs() {
-        return rs;
-    }
-
-    public void setRs(ResultSet rs) {
-        this.rs = rs;
-    }
+    private IsolationLevel iso;
+    private CachedRowSet cRow;
 
     public GenericObject(NodeType database, String query, boolean updated, ValidAction action,String dbName) {
 
@@ -50,6 +49,21 @@ public class GenericObject implements Serializable {
         this.action = action;
         this.database = database;
         this.dbName = dbName;
+    }
+    
+    public GenericObject(NodeType database, ValidAction action, IsolationLevel iso, String dbName){
+        this.database = database;
+        this.action = action;
+        this.iso = iso;
+        this.dbName = dbName;
+    }
+
+    public IsolationLevel getIso() {
+        return iso;
+    }
+
+    public void setIso(IsolationLevel iso) {
+        this.iso = iso;
     }
     
 
@@ -92,6 +106,24 @@ public class GenericObject implements Serializable {
     public void setUpdated(boolean updated) {
         this.updated = updated;
     }
+    
+    public InetAddress getIp() {
+        return ip;
+    }
+
+    public void setIp(InetAddress ip) {
+        this.ip = ip;
+    }
+
+    public CachedRowSet getcRow() {
+        return cRow;
+    }
+
+    public void setcRow(CachedRowSet cRow) {
+        this.cRow = cRow;
+    }
+
+    
     
     
 }

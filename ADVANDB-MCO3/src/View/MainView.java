@@ -21,6 +21,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -37,7 +39,7 @@ public class MainView extends JFrame {
     private JPanel transactionPanel;
     private JPanel isoPanel;
     
-    private JTable table;
+    private static JTable table;
     
     
     private JButton executeQuery;
@@ -112,6 +114,7 @@ public class MainView extends JFrame {
         executeQuery.setEnabled(false);
         
         query = new TextArea(5,10);
+        query.setEnabled(false);
         
         JScrollPane scroll = new JScrollPane(query,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
        
@@ -181,6 +184,7 @@ public class MainView extends JFrame {
                 setNode.setEnabled(true);
                 setIsoLevel.setEnabled(true);
                 executeQuery.setEnabled(true);
+                query.setEnabled(true);
                 begin.setEnabled(false);
                 Sender sender = new Sender(ValidAction.START_TRANSACTION);
                 sender.startTransaction(SelectNode());
@@ -195,6 +199,7 @@ public class MainView extends JFrame {
                 begin.setEnabled(true);
                 end.setEnabled(false);
                 setNode.setEnabled(false);
+                query.setEnabled(false);
                 setIsoLevel.setEnabled(false);
                 executeQuery.setEnabled(false);
                
@@ -219,7 +224,8 @@ public class MainView extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-               
+               Sender sender = new Sender(ValidAction.SET_ISOLATION_LEVEL);
+               sender.setIsolationLevel(SelectNode(), SelectIso());
             }
         
         });
@@ -228,11 +234,17 @@ public class MainView extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-               
+               Sender sender = new Sender(ValidAction.QUERY);
+               sender.executeQuery(SelectNode(), query.getText());
             }
         
         
         });
+    }
+    
+    public static void UpdateView(DefaultTableModel model){
+        table.setModel(model);
+        table.revalidate();
     }
     
     public NodeType SelectNode(){

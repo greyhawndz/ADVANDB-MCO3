@@ -44,6 +44,22 @@ public class NodeClient implements Runnable{
         }
     }
     
+    public NodeClient(String ip, GenericObject object, Socket socket) {
+        this.ip = ip;
+        this.object = object;
+        try{
+            System.out.println("Creating client");
+            this.socket = socket;
+            System.out.println("socket created");
+            //in = new ObjectInputStream(socket.getInputStream());
+            out = new ObjectOutputStream(socket.getOutputStream());
+            System.out.println("client online");
+        }catch(Exception e){
+            e.printStackTrace();
+            System.out.println("caught");
+        }
+    }
+    
     public void setObject(GenericObject object) {
         this.object = object;
     }
