@@ -54,7 +54,10 @@ public class Server implements Runnable {
                 in = new ObjectInputStream(socket.getInputStream());
                 try {
                     object = (GenericObject) in.readObject();
-                    System.out.println("Object received " +object.getQuery());
+                    
+                    if(object == null){
+                        System.out.println("object is null");
+                    }
                     receiver = new Receiver(object);
                     //receiver.UnpackObject();
                 } catch (ClassNotFoundException ex) {

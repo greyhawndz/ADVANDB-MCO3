@@ -25,8 +25,8 @@ import javax.swing.table.DefaultTableModel;
 public class Sender {
     private GenericObject object;
     private String centralIP = "localhost";
-    private String palIP = "localhost";
-    private String marIP = "localhost";
+    private String palIP = "192.168.0.106";
+    private String marIP = "192.168.0.104";
     private NodeClient client;
     private Thread clientThread;
     private ValidAction action;
@@ -39,6 +39,7 @@ public class Sender {
     
     public void startTransaction(NodeType destination){
         System.out.println("in start transaction");
+        
         if(destination == NodeType.PALAWAN){
             object = new GenericObject(destination,action, "db_hpq_palawan");
             client = new NodeClient(palIP,object);
@@ -58,7 +59,7 @@ public class Sender {
     public void setNode(NodeType destination){
         if(destination == NodeType.PALAWAN){
             System.out.println("SETTING NODE");
-            object = new GenericObject(destination, "use db_hpq_palawan", false, action, "db_hpq_palawan");
+            object = new GenericObject(destination, "use db_hpq_palawan;", false, action, "db_hpq_palawan");
             System.out.println("Client starting");
             client = new NodeClient(palIP,object);
             System.out.println("lol");

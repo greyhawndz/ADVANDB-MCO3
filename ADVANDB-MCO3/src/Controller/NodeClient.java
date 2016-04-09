@@ -28,9 +28,9 @@ public class NodeClient implements Runnable{
     private Socket socket;
     private GenericObject object;
    
-    public NodeClient(String ip) {
+    public NodeClient(String ip, GenericObject object) {
         this.ip = ip;
-        
+        this.object = object;
         try{
             System.out.println("Creating client");
             socket = new Socket(ip,PORT_NUM);
@@ -52,7 +52,9 @@ public class NodeClient implements Runnable{
     public void run() {
         try {
             System.out.println("client started");
+            
             out.writeObject(object);
+            out.flush();
             socket.close();
         } catch (IOException ex) {
             ex.printStackTrace();
