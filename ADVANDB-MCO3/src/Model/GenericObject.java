@@ -20,6 +20,9 @@ public class GenericObject implements Serializable {
     private boolean updated; // commited or not
     private ResultSet rs = null;
 
+    public GenericObject() {
+    }
+
     public ResultSet getRs() {
         return rs;   
     }

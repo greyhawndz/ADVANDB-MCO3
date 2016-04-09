@@ -28,9 +28,8 @@ public class NodeClient implements Runnable{
     private Socket socket;
     private GenericObject object;
    
-    public NodeClient(String ip, GenericObject object) {
+    public NodeClient(String ip) {
         this.ip = ip;
-        this.object = object;
         
         try{
             socket = new Socket(ip,PORT_NUM);
@@ -42,8 +41,10 @@ public class NodeClient implements Runnable{
         }
     }
     
+    public void setObject(GenericObject object) {
+        this.object = object;
+    }
     
-
     @Override
     public void run() {
         try {
@@ -59,6 +60,5 @@ public class NodeClient implements Runnable{
             }
         }
         
-       
     }
 }
