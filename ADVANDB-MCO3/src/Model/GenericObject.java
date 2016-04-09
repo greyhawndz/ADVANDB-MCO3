@@ -14,41 +14,30 @@ import java.sql.ResultSet;
  * @author WilliamPC
  */
 public class GenericObject implements Serializable {
-    private NodeType type;
-    private NodeType database;
-    private String query;
-    private boolean updated;
+    private NodeType destination; // node where to go
+    private NodeType origin; // node where it came from
+    private String query; // sql statement
+    private boolean updated; // commited or not
     private ResultSet rs = null;
 
     public ResultSet getRs() {
-        return rs;
+        return rs;   
     }
 
     public void setRs(ResultSet rs) {
         this.rs = rs;
     }
 
-    public GenericObject(NodeType type, NodeType database, String query, boolean updated) {
-        this.type = type;
-        this.database = database;
+//    if(destination == NodeType.MARINDUQUE || origin == NodeType.MARINDUQUE) {
+//            // do something to marinduque schema
+//        } else {
+//            // do something to palawan schema
+//        }
+    public GenericObject(NodeType destination, NodeType origin, String query, boolean updated) {
+        this.destination = destination;
+        this.origin = origin;
         this.query = query;
         this.updated = updated;
-    }
-
-    public NodeType getType() {
-        return type;
-    }
-
-    public void setType(NodeType type) {
-        this.type = type;
-    }
-
-    public NodeType getDatabase() {
-        return database;
-    }
-
-    public void setDatabase(NodeType database) {
-        this.database = database;
     }
 
     public String getQuery() {
@@ -65,6 +54,22 @@ public class GenericObject implements Serializable {
 
     public void setUpdated(boolean updated) {
         this.updated = updated;
+    }
+
+    public NodeType getDestination() {
+        return destination;
+    }
+
+    public void setDestination(NodeType destination) {
+        this.destination = destination;
+    }
+
+    public NodeType getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(NodeType origin) {
+        this.origin = origin;
     }
     
     
