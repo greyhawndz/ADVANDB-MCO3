@@ -6,6 +6,8 @@
 package Controller.Transaction;
 
 import Controller.DBConnector;
+import Helper.IsolationLevel;
+import Helper.NodeType;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,19 +23,23 @@ import net.proteanit.sql.DbUtils;
  * @author WilliamPC
  */
 public class Transaction {
+    private static final String ipPalawan = "";
+    private static final String ipCentral = "";
+    private static final String ipMarinduque = "";
     private DBConnector connector;
     private Connection connection;
     private ResultSet result;
     private PreparedStatement statement;
     private JTable table;
     
-    public Transaction(){
-        connector = DBConnector.getInstance();
+    public Transaction(String dbName){
+        connector = DBConnector.getInstance(dbName);
         connection = connector.getConnect();
-        setIsolationLevel(3); //sets the isolation to serializable by default
+        setIsolationLevel(IsolationLevel.SERIALIZABLE);
     }
     
     public void startTransaction() {
+        System.out.println("Transaciton started");
         try {
             connection.setAutoCommit(false);
         } catch (SQLException ex) {
@@ -71,18 +77,18 @@ public class Transaction {
     public void ProcessQuery(String query){
         query = query.toLowerCase();
         try {
-            Statement stmt = connection.createStatement();
+            statement = connection.prepareStatement(query);
             if(query.contains("select")) {
-                ResultSet result = stmt.executeQuery(query);
+                ResultSet result = statement.executeQuery(query);
                 //set result in table
                 table = new JTable();
                 table.setModel(DbUtils.resultSetToTableModel(result));
             } else if(query.contains("update")) {
                 // show number of rows updated
-                int update = stmt.executeUpdate(query);
+                int update = statement.executeUpdate(query);
                 // write in log
             } else if(query.contains("insert into")) {
-                int insert = stmt.executeUpdate(query);
+                int insert = statement.executeUpdate(query);
                 // write in log
             } else {
                 // error due to invalid statement
@@ -94,30 +100,25 @@ public class Transaction {
     
     
     //sets node of the transaction
-    public static void setNode(int node){
-        switch(node){
-           //Use connect.setCatalog()
-            case 1: 
-                break;
-            case 2: 
-                break;
-            case 3:
-                break;
-        }
+    public void setNode(NodeType node, String query) throws SQLException{
+        statement = connection.prepareStatement(query);
+        statement.execute(query);
+        System.out.println("Node changed to " +node);
     }
     
     //sets the iso level of the transaction
-    public void setIsolationLevel(int iso){
+    public void setIsolationLevel(IsolationLevel iso){
         try {
             switch (iso) {
-                case 0: connection.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
+                case READ_UNCOMMITTED: connection.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
                     break;
-                case 1: connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+                case READ_COMMITTED: connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
                     break;
-                case 2: connection.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
+                case REPEATABLE_READ: connection.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
                     break;
-                case 3: connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+                case SERIALIZABLE: connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
                     break;
+                default: connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
             }
         } catch (SQLException ex) {
             Logger.getLogger(Transaction.class.getName()).log(Level.SEVERE, null, ex);

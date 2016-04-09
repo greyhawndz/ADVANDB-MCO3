@@ -2,6 +2,9 @@ package Controller;
 
 
 import View.MainView;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -15,6 +18,7 @@ import View.MainView;
  */
 public class Driver {
     public static void main(String[] args) {
+        
         new MainView();
     }
 }

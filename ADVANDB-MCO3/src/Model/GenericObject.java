@@ -6,6 +6,7 @@
 package Model;
 
 import Helper.NodeType;
+import Helper.ValidAction;
 import java.io.Serializable;
 import java.sql.ResultSet;
 
@@ -14,10 +15,12 @@ import java.sql.ResultSet;
  * @author WilliamPC
  */
 public class GenericObject implements Serializable {
-    private NodeType type;
+    
     private NodeType database;
     private String query;
     private boolean updated;
+    private ValidAction action;
+    private String dbName;
     private ResultSet rs = null;
 
     public ResultSet getRs() {
@@ -28,19 +31,42 @@ public class GenericObject implements Serializable {
         this.rs = rs;
     }
 
-    public GenericObject(NodeType type, NodeType database, String query, boolean updated) {
-        this.type = type;
+    public GenericObject(NodeType database, String query, boolean updated, ValidAction action,String dbName) {
+
         this.database = database;
         this.query = query;
         this.updated = updated;
+        this.action = action;
+        this.dbName = dbName;
+    }
+    
+    public GenericObject(String query, boolean updated, ValidAction action) {
+        this.query = query;
+        this.updated = updated;
+        this.action = action;
+    }
+    
+    public GenericObject(NodeType database, ValidAction action, String dbName){
+        this.action = action;
+        this.database = database;
+        this.dbName = dbName;
+    }
+    
+
+    public String getDbName() {
+        return dbName;
     }
 
-    public NodeType getType() {
-        return type;
+    public void setDbName(String dbName) {
+        this.dbName = dbName;
     }
 
-    public void setType(NodeType type) {
-        this.type = type;
+    public ValidAction getAction() {
+        return action;
+    }
+
+    public void setAction(ValidAction action) {
+        this.action = action;
     }
 
     public NodeType getDatabase() {

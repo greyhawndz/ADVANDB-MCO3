@@ -20,8 +20,8 @@ import java.util.logging.Logger;
 
 
 public class DBConnector {
-    private final static String DB_NAME = "db_hpq_central";
-    private final static String URL_NAME = "jdbc:mysql://localhost:3306/" + DB_NAME;
+    private static String DB_NAME = "";
+    private static String URL_NAME = "";
     private final static String DRIVER = "com.mysql.jdbc.Driver" ;
     private final static String USERNAME = "root";
     private final static String PASSWORD = "water";
@@ -29,8 +29,9 @@ public class DBConnector {
     private Connection connect;
     
     
-    private DBConnector(){
-        
+    private DBConnector(String DB_NAME){
+        this.DB_NAME = DB_NAME;
+        URL_NAME = "jdbc:mysql://localhost:3306/" + this.DB_NAME;
         
         try{
             Class.forName(DRIVER).newInstance();
@@ -54,9 +55,9 @@ public class DBConnector {
         return connect;
     }
     
-    public static DBConnector getInstance(){
+    public static DBConnector getInstance(String dbName){
         if(connector == null){
-            connector = new DBConnector();
+            connector = new DBConnector(dbName);
         }
         return connector;
     }

@@ -22,14 +22,15 @@ import java.util.logging.Logger;
  * @author WilliamPC
  */
 public class Server implements Runnable {
-    private final int PORT_NUM = 1235;
+    
+    private final int PORT_NUM = 4321;
     private ServerSocket server = null;
     private Socket socket = null;
     private GenericObject object;
     private ObjectInputStream in;
     private ObjectOutputStream out;
     private byte[] receiveData;
-    private ByteArrayOutputStream bitStream = new ByteArrayOutputStream();
+    private Receiver receiver;
     private int read = 0;
     
     public Server() throws IOException{
@@ -44,11 +45,21 @@ public class Server implements Runnable {
     @Override
     public void run() {
         while(true){
+            System.out.println("Server running");
             receiveData = new byte[1024];
             try {
                 socket = server.accept();
+                System.out.println("connection receive from " +socket.getInetAddress());
+                System.out.println("Socket accepted");
                 in = new ObjectInputStream(socket.getInputStream());
-                
+                try {
+                    object = (GenericObject) in.readObject();
+                    System.out.println("Object received " +object.getQuery());
+                    receiver = new Receiver(object);
+                    //receiver.UnpackObject();
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                }
             } catch (IOException ex) {
                 ex.printStackTrace();
             }

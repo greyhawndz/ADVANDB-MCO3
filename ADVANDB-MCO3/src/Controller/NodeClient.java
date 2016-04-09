@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  */
 public class NodeClient implements Runnable{
     private String ip;
-    private final int PORT_NUM = 1234;
+    private final int PORT_NUM = 4321;
     private ObjectOutputStream out;
     private ObjectInputStream in;
     private Socket socket;
@@ -33,12 +33,15 @@ public class NodeClient implements Runnable{
         this.object = object;
         
         try{
+            System.out.println("Creating client");
             socket = new Socket(ip,PORT_NUM);
-            in = new ObjectInputStream(socket.getInputStream());
+            System.out.println("socket created");
+            //in = new ObjectInputStream(socket.getInputStream());
             out = new ObjectOutputStream(socket.getOutputStream());
             System.out.println("client online");
         }catch(Exception e){
             e.printStackTrace();
+            System.out.println("caught");
         }
     }
     
@@ -47,16 +50,11 @@ public class NodeClient implements Runnable{
     @Override
     public void run() {
         try {
+            System.out.println("client started");
             out.writeObject(object);
             socket.close();
         } catch (IOException ex) {
             ex.printStackTrace();
-        }finally{
-            try {
-                socket.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
         }
         
        

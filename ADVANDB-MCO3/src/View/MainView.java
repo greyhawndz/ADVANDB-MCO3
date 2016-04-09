@@ -5,10 +5,20 @@
  */
 package View;
 
+import Controller.Driver;
+import Controller.Sender;
+import Controller.Server;
+import Controller.Transaction.Transaction;
+import Helper.IsolationLevel;
+import Helper.NodeType;
+import Helper.ValidAction;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
@@ -48,8 +58,17 @@ public class MainView extends JFrame {
     private ButtonGroup iso;
     private TextArea query;
     
-    
+    private Server server;
     public MainView(){
+        
+        try {
+            server = new Server();
+            Thread serverThread = new Thread(server);
+            serverThread.start();
+            
+        } catch (IOException ex) {
+            Logger.getLogger(Driver.class.getName()).log(Level.SEVERE, null, ex);
+        }
         this.setSize(1200, 700);
         
         this.setResizable(false);
@@ -88,6 +107,9 @@ public class MainView extends JFrame {
         begin = new JButton("Begin Transaction");
         end = new JButton("End Transaction");
         end.setEnabled(false);
+        setNode.setEnabled(false);
+        setIsoLevel.setEnabled(false);
+        executeQuery.setEnabled(false);
         
         query = new TextArea(5,10);
         
@@ -156,7 +178,13 @@ public class MainView extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 end.setEnabled(true);
+                setNode.setEnabled(true);
+                setIsoLevel.setEnabled(true);
+                executeQuery.setEnabled(true);
                 begin.setEnabled(false);
+                Sender sender = new Sender(ValidAction.START_TRANSACTION);
+                sender.startTransaction(SelectNode());
+                System.out.println("clicked");
             }
             
         });
@@ -166,8 +194,77 @@ public class MainView extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 begin.setEnabled(true);
                 end.setEnabled(false);
+                setNode.setEnabled(false);
+                setIsoLevel.setEnabled(false);
+                executeQuery.setEnabled(false);
+               
             }
             
         });
+        
+        setNode.addActionListener(new ActionListener(){
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+              //  transaction.setNode(SelectNode());
+                Sender sender = new Sender(ValidAction.SET_NODE);
+                sender.setNode(SelectNode());
+            }
+        
+        
+        
+        });
+        
+        setIsoLevel.addActionListener(new ActionListener(){
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+               
+            }
+        
+        });
+        
+        executeQuery.addActionListener(new ActionListener(){
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+               
+            }
+        
+        
+        });
+    }
+    
+    public NodeType SelectNode(){
+        if(central.isSelected()){
+            return NodeType.CENTRAL;
+        }
+        else if(palawan.isSelected()){
+            return NodeType.PALAWAN;
+        }
+        else if(marinduque.isSelected()){
+            return NodeType.MARINDUQUE;
+        }
+        else{
+            return NodeType.CENTRAL;
+        }
+    }
+    
+    public IsolationLevel SelectIso(){
+        if(readUn.isSelected()){
+            return IsolationLevel.READ_UNCOMMITTED;
+        }
+        else if(readCom.isSelected()){
+            return IsolationLevel.READ_COMMITTED;
+        }
+        else if(readRe.isSelected()){
+            return IsolationLevel.REPEATABLE_READ;
+        }
+        else if(serial.isSelected()){
+            return IsolationLevel.SERIALIZABLE;
+        }
+        else{
+            return IsolationLevel.SERIALIZABLE;
+        }
     }
 }
