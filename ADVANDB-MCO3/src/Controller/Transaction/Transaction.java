@@ -50,7 +50,7 @@ public class Transaction {
     public boolean closeTransaction() {
         boolean committed = false;
         try {
-            
+            // listen to other nodes before commit
             connection.commit();
             committed = true;
             // unlock tables
