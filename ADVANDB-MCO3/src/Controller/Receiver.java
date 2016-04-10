@@ -63,6 +63,10 @@ public class Receiver {
             transaction.closeTransaction();
             System.out.println("Transaction closed");
         }
+        else if(object.getAction() == ValidAction.UPDATE){
+            transaction = new Transaction(object.getDbName());
+            transaction.updateNodes(object);
+        }
     }
     
     public DefaultTableModel extractData(CachedRowSet set) throws SQLException{

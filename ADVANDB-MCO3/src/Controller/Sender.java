@@ -81,6 +81,28 @@ public class Sender {
         }
     }
     
+    public void updateNodes(NodeType destination, String query){
+        System.out.println("executing query.....");
+        if(destination == NodeType.PALAWAN){
+            object = new GenericObject(destination, query, true,action, "db_hpq_palawan");
+            client = new NodeClient(palIP, object);
+            clientThread = new Thread(client);
+            clientThread.start();
+        }
+        else if(destination == NodeType.MARINDUQUE){
+            object = new GenericObject(destination, query, true,action, "db_hpq_marinduque");
+            client = new NodeClient(marIP, object);
+            clientThread = new Thread(client);
+            clientThread.start();
+        }
+        else if(destination == NodeType.CENTRAL){
+            object = new GenericObject(destination, query, true,action, "db_hpq_central");
+            client = new NodeClient(centralIP, object);
+            clientThread = new Thread(client);
+            clientThread.start();
+        }
+    }
+    
     public void setIsolationLevel(NodeType destination, IsolationLevel level){
         System.out.println("Setting iso level");
         if(destination == NodeType.PALAWAN){

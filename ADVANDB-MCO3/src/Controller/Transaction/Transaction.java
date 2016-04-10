@@ -7,6 +7,7 @@ package Controller.Transaction;
 
 import Controller.DBConnector;
 import Controller.NodeClient;
+import Controller.Sender;
 import Helper.IsolationLevel;
 import Helper.NodeType;
 import Helper.ValidAction;
@@ -85,6 +86,7 @@ public class Transaction {
         String query = object.getQuery().toLowerCase();
         try {
             statement = connection.prepareStatement(query);
+            
             if(query.contains("select")) {
                 ResultSet result = statement.executeQuery(query);
               /*  result.beforeFirst();
@@ -100,9 +102,23 @@ public class Transaction {
                 client = new NodeClient(object.getIp().toString().substring(1), object);
                 clientThread = new Thread(client);
                 clientThread.start();
-            } else if(query.contains("update")) {
+            } else if(query.contains("update") && !object.isUpdated()) {
+                System.out.println("update");
+                statement.executeUpdate(query);
+               System.out.println("updating");
+                Sender sender = new Sender(ValidAction.UPDATE);
                 // show number of rows updated
-                int update = statement.executeUpdate(query);
+                if(object.getDatabase() == NodeType.CENTRAL){
+                    System.out.println("Central");
+                    sender.updateNodes(NodeType.MARINDUQUE, query);
+                    sender.updateNodes(NodeType.PALAWAN, query);
+                    System.out.println("Updated others");
+                }
+                else{
+                    sender.executeQuery(NodeType.CENTRAL, query);
+                }
+                
+                //int update = statement.executeUpdate(query);
                 //update other tables
                 // write in log
             } else if(query.contains("insert into")) {
@@ -113,7 +129,24 @@ public class Transaction {
             }
         } catch (SQLException ex) {
             Logger.getLogger(Transaction.class.getName()).log(Level.SEVERE, null, ex);
+            try {
+                connection.rollback();
+            } catch (SQLException ex1) {
+                Logger.getLogger(Transaction.class.getName()).log(Level.SEVERE, null, ex1);
+            }
         }
+    }
+    
+    public void updateNodes(GenericObject object){
+        String query = object.getQuery().toLowerCase();
+        try {
+            System.out.println("In update Nodes");
+            statement = connection.prepareStatement(query);
+             statement.executeUpdate(query);
+        } catch (SQLException ex) {
+            Logger.getLogger(Transaction.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         
     }
     
     

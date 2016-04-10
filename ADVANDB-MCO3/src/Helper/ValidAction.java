@@ -15,5 +15,6 @@ public enum ValidAction {
     SET_NODE,
     SET_ISOLATION_LEVEL,
     QUERY,
-    READ
+    READ,
+    UPDATE
 }
