@@ -38,6 +38,27 @@ public class Sender {
         System.out.println("ACTION: " +action);
     }
     
+    public void endTransaction(NodeType destination){
+        if(destination == NodeType.PALAWAN){
+            object = new GenericObject(destination,action,"db_hpq_palawan");
+            client = new NodeClient(palIP, object);
+            clientThread = new Thread(client);
+            clientThread.start();
+        }
+        else if(destination == NodeType.MARINDUQUE){
+            object = new GenericObject(destination,action,"db_hpq_marinduque");
+            client = new NodeClient(marIP, object);
+            clientThread = new Thread(client);
+            clientThread.start();
+        }
+        else if(destination == NodeType.CENTRAL){
+            object = new GenericObject(destination,action,"db_hpq_central");
+            client = new NodeClient(centralIP, object);
+            clientThread = new Thread(client);
+            clientThread.start();
+        }
+    }
+    
     public void executeQuery(NodeType destination, String query){
         System.out.println("executing query.....");
         if(destination == NodeType.PALAWAN){
@@ -47,8 +68,14 @@ public class Sender {
             clientThread.start();
         }
         else if(destination == NodeType.MARINDUQUE){
-            object = new GenericObject(destination, query, false,action, "db_hpq_palawan");
+            object = new GenericObject(destination, query, false,action, "db_hpq_marinduque");
             client = new NodeClient(marIP, object);
+            clientThread = new Thread(client);
+            clientThread.start();
+        }
+        else if(destination == NodeType.CENTRAL){
+            object = new GenericObject(destination, query, false,action, "db_hpq_central");
+            client = new NodeClient(centralIP, object);
             clientThread = new Thread(client);
             clientThread.start();
         }
@@ -65,6 +92,12 @@ public class Sender {
         else if(destination == NodeType.MARINDUQUE){
             object = new GenericObject(destination,action,level, "db_hpq_marinduque");
             client = new NodeClient(marIP,object);
+            clientThread = new Thread(client);
+            clientThread.start();
+        }
+        else if(destination == NodeType.CENTRAL){
+            object = new GenericObject(destination,action,level, "db_hpq_central");
+            client = new NodeClient(centralIP,object);
             clientThread = new Thread(client);
             clientThread.start();
         }
@@ -86,6 +119,12 @@ public class Sender {
             clientThread = new Thread(client);
             clientThread.start();
         }
+        else if(destination == NodeType.CENTRAL){
+            object = new GenericObject(destination,action, "db_hpq_central");
+            client = new NodeClient(centralIP, object);
+            clientThread = new Thread(client);
+            clientThread.start();
+        }
         System.out.println("end of start");
     }
     
@@ -99,12 +138,17 @@ public class Sender {
             clientThread = new Thread(client);
             System.out.println("lol2");
             clientThread.start();
-            System.out.println("Client started");
-            
+            System.out.println("Client started");  
         }
         else if(destination == NodeType.MARINDUQUE){
             object = new GenericObject(destination, "use db_hpq_marinduque", false, action, "db_hpq_marinduque");
             client = new NodeClient(marIP,object);
+            clientThread = new Thread(client);
+            clientThread.start();
+        }
+        else if(destination == NodeType.CENTRAL){
+            object = new GenericObject(destination, "use db_hpq_central", false, action, "db_hpq_central");
+            client = new NodeClient(centralIP,object);
             clientThread = new Thread(client);
             clientThread.start();
         }

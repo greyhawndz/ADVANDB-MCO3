@@ -56,9 +56,12 @@ public class Receiver {
         }
         else if(object.getAction() == ValidAction.READ){
             System.out.println("READ");
-           
             MainView.UpdateView(extractData(object.getcRow()));
-            
+        }
+        else if(object.getAction() == ValidAction.END_TRANSACTION){
+            transaction = new Transaction(object.getDbName());
+            transaction.closeTransaction();
+            System.out.println("Transaction closed");
         }
     }
     

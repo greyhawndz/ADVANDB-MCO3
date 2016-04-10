@@ -125,6 +125,13 @@ public class MainView extends JFrame {
         readCom = new JRadioButton("Read Committed");
         readRe = new JRadioButton("Read Repeatable");
         serial = new JRadioButton("Serializable");
+        central.setEnabled(false);
+        palawan.setEnabled(false);
+        marinduque.setEnabled(false);
+        readUn.setEnabled(false);
+        readCom.setEnabled(false);
+        readRe.setEnabled(false);
+        serial.setEnabled(false);
         
         node = new ButtonGroup();
         node.add(central);
@@ -184,6 +191,13 @@ public class MainView extends JFrame {
                 setNode.setEnabled(true);
                 setIsoLevel.setEnabled(true);
                 executeQuery.setEnabled(true);
+                central.setEnabled(true);
+                palawan.setEnabled(true);
+                marinduque.setEnabled(true);
+                readUn.setEnabled(true);
+                readCom.setEnabled(true);
+                readRe.setEnabled(true);
+                serial.setEnabled(true);
                 query.setEnabled(true);
                 begin.setEnabled(false);
                 Sender sender = new Sender(ValidAction.START_TRANSACTION);
@@ -202,6 +216,16 @@ public class MainView extends JFrame {
                 query.setEnabled(false);
                 setIsoLevel.setEnabled(false);
                 executeQuery.setEnabled(false);
+                central.setEnabled(false);
+                palawan.setEnabled(false);
+                marinduque.setEnabled(false);
+                readUn.setEnabled(false);
+                readCom.setEnabled(false);
+                readRe.setEnabled(false);
+                serial.setEnabled(false);
+                
+                Sender sender = new Sender(ValidAction.END_TRANSACTION);
+                sender.endTransaction(SelectNode());
                
             }
             

@@ -63,7 +63,7 @@ public class Transaction {
             // unlock tables
             // update log
             // send data to other database
-            connection.close();
+         //   connection.close();
         } catch (SQLException ex) {
             try {
                 connection.rollback();
@@ -71,13 +71,13 @@ public class Transaction {
             } catch (SQLException ex1) {
                 Logger.getLogger(Transaction.class.getName()).log(Level.SEVERE, null, ex1);
             }
-        } finally {
+        } /*finally {
             try {
                 connection.rollback();
             } catch (SQLException ex1) {
                 Logger.getLogger(Transaction.class.getName()).log(Level.SEVERE, null, ex1);
             }
-        }
+        }*/
         return committed;
     }
     
@@ -103,6 +103,7 @@ public class Transaction {
             } else if(query.contains("update")) {
                 // show number of rows updated
                 int update = statement.executeUpdate(query);
+                //update other tables
                 // write in log
             } else if(query.contains("insert into")) {
                 int insert = statement.executeUpdate(query);

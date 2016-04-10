@@ -22,6 +22,7 @@ import javax.sql.rowset.CachedRowSet;
 public class GenericObject implements Serializable {
     
     private NodeType database;
+    private NodeType source;
     private InetAddress ip;
     private String query;
     private boolean updated;
@@ -121,6 +122,14 @@ public class GenericObject implements Serializable {
 
     public void setcRow(CachedRowSet cRow) {
         this.cRow = cRow;
+    }
+
+    public NodeType getSource() {
+        return source;
+    }
+
+    public void setSource(NodeType source) {
+        this.source = source;
     }
 
     
