@@ -40,11 +40,19 @@ public class Transaction {
     private PreparedStatement statement;
     private NodeClient client;
     private Thread clientThread;
+    private String dbName;
     
-    public Transaction(String dbName){
+    public String getDbName() {
+        return dbName;
+    }
+
+    public void setDbName(String dbName) {
+        this.dbName = dbName;
+    }
+    
+    public void startConnection(){
         connector = DBConnector.getInstance(dbName);
         connection = connector.getConnect();
-        setIsolationLevel(IsolationLevel.SERIALIZABLE);
     }
     
     public void startTransaction() {

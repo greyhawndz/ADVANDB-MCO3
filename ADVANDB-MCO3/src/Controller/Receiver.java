@@ -27,14 +27,17 @@ public class Receiver {
     
     private GenericObject object;
     private Transaction transaction;
-    public Receiver(GenericObject object){
-        this.object = object;
+    public Receiver(){
+        transaction = new Transaction();
+        
     }
     
     
     public void UnpackObject() throws SQLException{
+        transaction.setDbName(object.getDbName());
+        transaction.startConnection();
         if(object.getAction() == ValidAction.SET_NODE){
-            transaction = new Transaction(object.getDbName());
+           // transaction = new Transaction(object.getDbName());
             transaction.setIsolationLevel(object.getIso());
             try {
                 transaction.setNode(object.getDatabase(), object.getQuery());
@@ -44,16 +47,16 @@ public class Receiver {
         }
         else if(object.getAction() == ValidAction.START_TRANSACTION){
             System.out.println("start transaction");
-            transaction = new Transaction(object.getDbName());
+          //  transaction = new Transaction(object.getDbName());
             transaction.setIsolationLevel(object.getIso());
             transaction.startTransaction();
         }
         else if(object.getAction() == ValidAction.SET_ISOLATION_LEVEL){
-            transaction = new Transaction(object.getDbName());
+          //  transaction = new Transaction(object.getDbName());
             transaction.setIsolationLevel(object.getIso());
         }
         else if(object.getAction() == ValidAction.QUERY){
-            transaction = new Transaction(object.getDbName());
+          //  transaction = new Transaction(object.getDbName());
             transaction.setIsolationLevel(object.getIso());
             transaction.ProcessQuery(object);
         }
@@ -62,17 +65,18 @@ public class Receiver {
             MainView.UpdateView(extractData(object.getcRow()));
         }
         else if(object.getAction() == ValidAction.END_TRANSACTION){
-            transaction = new Transaction(object.getDbName());
+          //  transaction = new Transaction(object.getDbName());
             transaction.closeTransaction(object);
             System.out.println("Transaction closed");
         }
         else if(object.getAction() == ValidAction.UPDATE){
-            transaction = new Transaction(object.getDbName());
+            transaction = new Transaction();
+            transaction.startConnection();
             transaction.updateNodes(object);
             
         }
         else if(object.getAction() == ValidAction.COMMIT){
-            transaction = new Transaction(object.getDbName());
+          //  transaction = new Transaction(object.getDbName());
             transaction.commitNodes(object);
         }
     }
@@ -102,4 +106,22 @@ public class Receiver {
         System.out.println("Size of data " +data.size());
     return new DefaultTableModel(data, columnNames);
     }
+
+    public GenericObject getObject() {
+        return object;
+    }
+
+    public void setObject(GenericObject object) {
+        this.object = object;
+    }
+
+    public Transaction getTransaction() {
+        return transaction;
+    }
+
+    public void setTransaction(Transaction transaction) {
+        this.transaction = transaction;
+    }
+    
+    
 }

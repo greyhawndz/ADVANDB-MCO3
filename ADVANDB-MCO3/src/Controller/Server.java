@@ -36,7 +36,7 @@ public class Server implements Runnable {
     
     public Server() throws IOException{
         server = new ServerSocket(PORT_NUM);
-        
+        receiver = new Receiver();
     }
     
     public String getServerInetAddress(){
@@ -56,9 +56,8 @@ public class Server implements Runnable {
                 try {
                     object = (GenericObject) in.readObject();
                     object.setIp(socket.getInetAddress());
-                    
+                    receiver.setObject(object);
                     System.out.println("received object" +object.getQuery());
-                    receiver = new Receiver(object);
                     try {
                         receiver.UnpackObject();
                     } catch (SQLException ex) {
