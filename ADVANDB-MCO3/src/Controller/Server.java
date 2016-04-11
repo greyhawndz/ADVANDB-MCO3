@@ -55,11 +55,11 @@ public class Server implements Runnable {
                 in = new ObjectInputStream(socket.getInputStream());
                 try {
                     object = (GenericObject) in.readObject();
-                    object.setIp(socket.getInetAddress());
+                 //   object.setIp(socket.getInetAddress());
                     receiver.setObject(object);
                     System.out.println("received object" +object.getQuery());
                     try {
-                        receiver.UnpackObject();
+                        receiver.UnpackObject(object);
                     } catch (SQLException ex) {
                         Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
                     }

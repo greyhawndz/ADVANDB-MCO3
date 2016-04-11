@@ -26,15 +26,123 @@ import javax.swing.table.DefaultTableModel;
  */
 public class Sender {
     private GenericObject object;
-    private String centralIP = "10.100.193.228";
-    private String palIP = "10.100.214.58";
-    private String marIP = "10.100.216.188";
+    private String centralIP = "localhost";
+    private String palIP = "localhost";
+    private String marIP = "localhost";
     private NodeClient client;
     private Thread clientThread;
     private ValidAction action;
     
+    public Sender(){
+        client = new NodeClient();
+        object = new GenericObject();
+        object.setUpdated(false);
+        object.setCommitted(false);
+        
+    }
     
+    public Sender(GenericObject object){
+        client = new NodeClient();
+        this.object = object;
+    }
     
+    public void sendObject(String query){
+        object.setQuery(query);
+        System.out.println("I AM USING THE DB" +object.getDatabase());
+        client.setObject(object);
+        clientThread = new Thread(client);
+        clientThread.start();
+    }
+    
+    public void setIso(IsolationLevel iso){
+        object.setIso(iso);
+    }
+    
+    public void setNode(NodeType destination){
+        object.setDatabase(destination);
+        if(destination == NodeType.CENTRAL){
+            object.setIp(centralIP);  
+            object.setDbName("db_hpq_central");
+        }
+        else if(destination == NodeType.MARINDUQUE){
+            object.setIp(marIP);  
+            object.setDbName("db_hpq_marinduque");
+        }
+        else if(destination == NodeType.PALAWAN){
+            object.setIp(palIP);
+            object.setDbName("db_hpq_palawan");
+        }
+        client.setIp(object.getIp());
+    }
+    
+    public void updateNodes(NodeType destination, GenericObject object){
+        GenericObject objectC = new GenericObject();
+        GenericObject objectM = new GenericObject();
+        GenericObject objectP = new GenericObject();
+        objectC.setCommitted(false);
+        objectC.setUpdated(true);
+        objectM.setCommitted(false);
+        objectM.setUpdated(true);
+        objectP.setCommitted(false);
+        objectP.setUpdated(true);
+        if(destination == NodeType.CENTRAL){
+           objectM.setDatabase(NodeType.MARINDUQUE);
+           objectM.setIp(marIP);
+           objectM.setDbName("db_hpq_marinduque");
+           objectM.setQuery(object.getQuery());
+           objectM.setIso(IsolationLevel.SERIALIZABLE);
+            System.out.println("Under marinduque");
+           sendOthers(objectM);
+           objectP.setDatabase(NodeType.PALAWAN);
+           objectP.setIp(palIP);
+           objectP.setDbName("db_hpq_palawan");
+           objectP.setQuery(object.getQuery());
+           objectP.setIso(IsolationLevel.SERIALIZABLE);
+            System.out.println("under palawan");
+           sendOthers(objectP);
+        }
+        else{
+            objectC.setDatabase(NodeType.CENTRAL);
+           objectC.setIp(centralIP);
+           objectC.setDbName("db_hpq_central");
+           objectC.setQuery(object.getQuery());
+           objectC.setIso(IsolationLevel.SERIALIZABLE);
+            sendOthers(objectC);
+        }
+    }
+    
+    public void sendOthers(GenericObject objectU){
+        client = new NodeClient();
+        client.setObject(objectU);
+        clientThread = new Thread(client);
+        clientThread.start();
+    }
+    
+    public void endTransaction(){
+        object.setCommitted(true);
+        object.setUpdated(false);
+        object.setAction(ValidAction.END_TRANSACTION);
+        sendObject(object.getQuery());
+    }
+    
+    public void commitNodes(NodeType destination, GenericObject object){
+        this.object = object;
+        object.setUpdated(false);
+        object.setCommitted(true);
+        object.setAction(ValidAction.COMMIT);
+        if(destination == NodeType.CENTRAL){
+           setNode(NodeType.MARINDUQUE);
+           sendObject(object.getQuery());
+           setNode(NodeType.PALAWAN);
+           sendObject(object.getQuery());
+        }
+        else {
+            setNode(NodeType.CENTRAL);
+            sendObject(object.getQuery());
+        }
+    }
+    
+    /*
     
     public void endTransaction(NodeType destination){
         action = ValidAction.END_TRANSACTION;
@@ -117,31 +225,7 @@ public class Sender {
         }
     }
     
-    public void updateNodes(NodeType destination, String query){
-        action = ValidAction.UPDATE;
-        System.out.println("executing query.....");
-        if(destination == NodeType.PALAWAN){
-            object = new GenericObject(destination, query, true,action, "db_hpq_palawan");
-         //   object.setIso(MainView.SelectIso());
-            client = new NodeClient(palIP, object);
-            clientThread = new Thread(client);
-            clientThread.start();
-        }
-        else if(destination == NodeType.MARINDUQUE){
-            object = new GenericObject(destination, query, true,action, "db_hpq_marinduque");
-         //   object.setIso(MainView.SelectIso());
-            client = new NodeClient(marIP, object);
-            clientThread = new Thread(client);
-            clientThread.start();
-        }
-        else if(destination == NodeType.CENTRAL){
-            object = new GenericObject(destination, query, true,action, "db_hpq_central");
-         //   object.setIso(MainView.SelectIso());
-            client = new NodeClient(centralIP, object);
-            clientThread = new Thread(client);
-            clientThread.start();
-        }
-    }
+    
     
     public void setIsolationLevel(NodeType destination, IsolationLevel level){
         System.out.println("Setting iso level");
@@ -223,7 +307,7 @@ public class Sender {
             clientThread.start();
         }
     }
-
+*/
     public ValidAction getAction() {
         return action;
     }

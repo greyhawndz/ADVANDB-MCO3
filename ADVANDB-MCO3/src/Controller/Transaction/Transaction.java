@@ -43,38 +43,35 @@ public class Transaction {
     private PreparedStatement statement;
     private NodeClient client;
     private Thread clientThread;
-    private String dbName;
+    private String dbName = "db_hpq_central";
     private PrintWriter pw;
     
     public String getDbName() {
         return dbName;
+    }
+    
+    public Transaction() throws IOException{
+        try {
+            connector = DBConnector.getInstance(dbName);
+            connection = connector.getConnect();
+            connection.setAutoCommit(false);
+             pw = new PrintWriter(new FileWriter("test/log.txt"));
+        } catch (SQLException ex) {
+            Logger.getLogger(Transaction.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void setDbName(String dbName) {
         this.dbName = dbName;
     }
     
-    public void startConnection(){
-        connector = DBConnector.getInstance(dbName);
-        connection = connector.getConnect();
-        try {
-            pw = new PrintWriter(new FileWriter("test/log.txt"));
-        } catch (IOException ex) {
-            Logger.getLogger(Transaction.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+    
     
     public void startTransaction() {
         System.out.println("Transaciton started");
         pw.write("start\n");
         
-        try {
-            
-            connection.setAutoCommit(false);
-            
-        } catch (SQLException ex) {
-            Logger.getLogger(Transaction.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        
     }
     
     public boolean closeTransaction(GenericObject object) {
@@ -90,18 +87,7 @@ public class Transaction {
             
             System.out.println("OBJECT DATABASE: " +object.getDatabase());
             
-            if(object.getDatabase() == NodeType.CENTRAL){
-                System.out.println("committing in others");
-                sender.setNode(NodeType.MARINDUQUE);
-                sender.commitNodes(NodeType.CENTRAL);
-                sender.setNode(NodeType.PALAWAN);
-                sender.commitNodes(NodeType.CENTRAL);
-            }
-            else{
-                System.out.println("Commiting in central");
-                sender.setNode(NodeType.CENTRAL);
-                sender.commitNodes(NodeType.CENTRAL);
-            }
+            sender.commitNodes(object.getDatabase(), object);
             pw.close();
             // unlock tables
             
@@ -162,7 +148,9 @@ public class Transaction {
                 CachedRowSet cRow = new CachedRowSetImpl();
                 cRow.populate(result);
                 object.setcRow(cRow);
-                client = new NodeClient(object.getIp().toString().substring(1), object);
+                client = new NodeClient();
+                client.setIp(object.getIp().toString().substring(0)); //CHANGE TO 1 WHEN NOT USING LOCALHOST
+                client.setObject(object);
                 clientThread = new Thread(client);
                 clientThread.start();
             } else if(query.contains("update")) {
@@ -171,22 +159,11 @@ public class Transaction {
                 pw.write("write "+query+"\n");
                System.out.println("updating");
                if(!object.isUpdated()){
-                   System.out.println("object is not updated");
-                Sender sender = new Sender();
+                System.out.println("object is not updated");
+                Sender sender = new Sender(object);
                 sender.setAction(ValidAction.UPDATE);
                 // show number of rows updated
-                if(object.getDatabase() == NodeType.CENTRAL){
-                    System.out.println("Central");
-                    sender.setNode(NodeType.MARINDUQUE);
-                    sender.updateNodes(NodeType.MARINDUQUE, query);
-                    sender.setNode(NodeType.PALAWAN);
-                    sender.updateNodes(NodeType.PALAWAN, query);
-                    System.out.println("Updated others");
-                }
-                else{
-                    sender.setNode(NodeType.CENTRAL);
-                    sender.executeQuery(NodeType.CENTRAL, query);
-                }
+                sender.updateNodes(object.getDatabase(), object);
                }
                 //int update = statement.executeUpdate(query);
                 //update other tables
@@ -210,11 +187,6 @@ public class Transaction {
     }
     
     public void updateNodes(GenericObject object){
-        try {
-            connection.setAutoCommit(false);
-        } catch (SQLException ex) {
-            Logger.getLogger(Transaction.class.getName()).log(Level.SEVERE, null, ex);
-        }
         String query = object.getQuery().toLowerCase();
         try {
             System.out.println("In update Nodes");
@@ -229,7 +201,16 @@ public class Transaction {
     
     
     //sets node of the transaction
-    public void setNode(NodeType node, String query) throws SQLException{
+    public void setNode(NodeType node) throws SQLException{
+        String query = "";
+        switch(node){
+            case CENTRAL: query = "use db_hpq_central";
+                    break;
+            case MARINDUQUE: query = "use db_hpq_marinduque";
+                break;
+            case PALAWAN: query = "use db_hpq_palawan";
+                break;
+        }
         statement = connection.prepareStatement(query);
         statement.execute(query);
         System.out.println("Node changed to " +node);

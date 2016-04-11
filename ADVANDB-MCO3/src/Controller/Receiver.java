@@ -9,6 +9,7 @@ import Controller.Transaction.Transaction;
 import Helper.ValidAction;
 import Model.GenericObject;
 import View.MainView;
+import java.io.IOException;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Vector;
@@ -27,12 +28,43 @@ public class Receiver {
     
     private GenericObject object;
     private Transaction transaction;
+    
     public Receiver(){
-        transaction = new Transaction();
-        
+        try {
+            transaction = new Transaction();
+        } catch (IOException ex) {
+            Logger.getLogger(Receiver.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
+    public void UnpackObject(GenericObject object) throws SQLException{
+       this.object = object;
+       
+       if(object.getAction() == ValidAction.READ){
+           MainView.UpdateView(extractData(object.getcRow()));
+           System.out.println("Data extracted");
+       }
+       else if(object.isUpdated()){
+           System.out.println("will update");
+           transaction.setNode(object.getDatabase());
+           transaction.updateNodes(object);
+       }
+       else if(object.isCommitted() && object.getAction() == ValidAction.END_TRANSACTION){
+           transaction.setNode(object.getDatabase());
+           transaction.closeTransaction(object);
+       }
+       else if(object.isCommitted()){
+           transaction.setNode(object.getDatabase());
+           transaction.commitNodes(object);
+       }
+       else {
+           transaction.setNode(object.getDatabase());
+           transaction.setIsolationLevel(object.getIso());
+           transaction.ProcessQuery(object);
+       }
+    }
     
+  /*  
     public void UnpackObject() throws SQLException{
         transaction.setDbName(object.getDbName());
         transaction.startConnection();
@@ -81,6 +113,7 @@ public class Receiver {
         }
     }
     
+    */
     public DefaultTableModel extractData(CachedRowSet set) throws SQLException{
         ResultSetMetaData metaData = set.getMetaData();
         System.out.println("extracting");

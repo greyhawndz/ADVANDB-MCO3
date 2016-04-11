@@ -23,7 +23,7 @@ public class GenericObject implements Serializable {
     
     private NodeType database;
     private NodeType source;
-    private InetAddress ip;
+    private String ip;
     private boolean committed;
     private String query;
     private boolean updated;
@@ -32,7 +32,7 @@ public class GenericObject implements Serializable {
     private IsolationLevel iso;
     private CachedRowSet cRow;
     
-
+/*
     public GenericObject(NodeType database, String query, boolean updated, ValidAction action,String dbName) {
 
         this.database = database;
@@ -61,6 +61,7 @@ public class GenericObject implements Serializable {
         this.dbName = dbName;
     }
 
+    */
     public IsolationLevel getIso() {
         return iso;
     }
@@ -110,11 +111,11 @@ public class GenericObject implements Serializable {
         this.updated = updated;
     }
     
-    public InetAddress getIp() {
+    public String getIp() {
         return ip;
     }
 
-    public void setIp(InetAddress ip) {
+    public void setIp(String ip) {
         this.ip = ip;
     }
 

@@ -63,7 +63,7 @@ public class MainView extends JFrame {
     private Server server;
     private Sender sender;
     public MainView(){
-        sender = new Sender();
+        
         try {
             server = new Server();
             Thread serverThread = new Thread(server);
@@ -201,8 +201,12 @@ public class MainView extends JFrame {
                 serial.setEnabled(true);
                 query.setEnabled(true);
                 begin.setEnabled(false);
+                sender = new Sender();
                // Sender sender = new Sender(ValidAction.START_TRANSACTION);
-                sender.startTransaction(SelectNode());
+              //  sender.startTransaction(SelectNode());
+               
+                sender.setNode(SelectNode());
+                sender.setIso(SelectIso());
                 System.out.println("clicked");
             }
             
@@ -226,8 +230,8 @@ public class MainView extends JFrame {
                 serial.setEnabled(false);
                 
              //   Sender sender = new Sender(ValidAction.END_TRANSACTION);
-                sender.endTransaction(SelectNode());
-               
+            //    sender.endTransaction(SelectNode());
+                  sender.endTransaction();
             }
             
         });
@@ -238,6 +242,7 @@ public class MainView extends JFrame {
             public void actionPerformed(ActionEvent e) {
               //  transaction.setNode(SelectNode());
              //   Sender sender = new Sender(ValidAction.SET_NODE);
+             //   sender.setNode(SelectNode());
                 sender.setNode(SelectNode());
             }
         
@@ -250,7 +255,8 @@ public class MainView extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
              //  Sender sender = new Sender(ValidAction.SET_ISOLATION_LEVEL);
-               sender.setIsolationLevel(SelectNode(), SelectIso());
+             //  sender.setIsolationLevel(SelectNode(), SelectIso());
+                sender.setIso(SelectIso());
             }
         
         });
@@ -260,7 +266,8 @@ public class MainView extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
              //  Sender sender = new Sender(ValidAction.QUERY);
-               sender.executeQuery(SelectNode(), query.getText());
+             //  sender.executeQuery(SelectNode(), query.getText());
+                sender.sendObject(query.getText());
             }
         
         
