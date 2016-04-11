@@ -35,6 +35,7 @@ public class Receiver {
     public void UnpackObject() throws SQLException{
         if(object.getAction() == ValidAction.SET_NODE){
             transaction = new Transaction(object.getDbName());
+            transaction.setIsolationLevel(object.getIso());
             try {
                 transaction.setNode(object.getDatabase(), object.getQuery());
             } catch (SQLException ex) {
@@ -44,6 +45,7 @@ public class Receiver {
         else if(object.getAction() == ValidAction.START_TRANSACTION){
             System.out.println("start transaction");
             transaction = new Transaction(object.getDbName());
+            transaction.setIsolationLevel(object.getIso());
             transaction.startTransaction();
         }
         else if(object.getAction() == ValidAction.SET_ISOLATION_LEVEL){
@@ -52,6 +54,7 @@ public class Receiver {
         }
         else if(object.getAction() == ValidAction.QUERY){
             transaction = new Transaction(object.getDbName());
+            transaction.setIsolationLevel(object.getIso());
             transaction.ProcessQuery(object);
         }
         else if(object.getAction() == ValidAction.READ){

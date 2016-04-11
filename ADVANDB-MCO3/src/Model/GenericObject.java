@@ -31,6 +31,7 @@ public class GenericObject implements Serializable {
     private String dbName;
     private IsolationLevel iso;
     private CachedRowSet cRow;
+    
 
     public GenericObject(NodeType database, String query, boolean updated, ValidAction action,String dbName) {
 
