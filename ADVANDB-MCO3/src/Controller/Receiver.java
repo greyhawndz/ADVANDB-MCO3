@@ -60,12 +60,17 @@ public class Receiver {
         }
         else if(object.getAction() == ValidAction.END_TRANSACTION){
             transaction = new Transaction(object.getDbName());
-            transaction.closeTransaction();
+            transaction.closeTransaction(object);
             System.out.println("Transaction closed");
         }
         else if(object.getAction() == ValidAction.UPDATE){
             transaction = new Transaction(object.getDbName());
             transaction.updateNodes(object);
+            
+        }
+        else if(object.getAction() == ValidAction.COMMIT){
+            transaction = new Transaction(object.getDbName());
+            transaction.commitNodes(object);
         }
     }
     

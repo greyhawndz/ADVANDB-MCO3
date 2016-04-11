@@ -24,6 +24,7 @@ public class GenericObject implements Serializable {
     private NodeType database;
     private NodeType source;
     private InetAddress ip;
+    private boolean committed;
     private String query;
     private boolean updated;
     private ValidAction action;
@@ -130,6 +131,14 @@ public class GenericObject implements Serializable {
 
     public void setSource(NodeType source) {
         this.source = source;
+    }
+
+    public boolean isCommitted() {
+        return committed;
+    }
+
+    public void setCommitted(boolean committed) {
+        this.committed = committed;
     }
 
     

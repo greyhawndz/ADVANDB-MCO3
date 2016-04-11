@@ -55,13 +55,30 @@ public class Transaction {
         }
     }
     
-    public boolean closeTransaction() {
+    public boolean closeTransaction(GenericObject object) {
         boolean committed = false;
+        Sender sender = new Sender(ValidAction.COMMIT);
         try {
             // listen to other nodes before commit
             connection.commit();
             committed = true;
+            
+            System.out.println("OBJECT DATABASE: " +object.getDatabase());
+            
+            if(object.getDatabase() == NodeType.CENTRAL){
+                System.out.println("committing in others");
+                sender.setNode(NodeType.MARINDUQUE);
+                sender.commitNodes(NodeType.CENTRAL);
+                sender.setNode(NodeType.PALAWAN);
+                sender.commitNodes(NodeType.CENTRAL);
+            }
+            else{
+                System.out.println("Commiting in central");
+                sender.setNode(NodeType.CENTRAL);
+                sender.commitNodes(NodeType.CENTRAL);
+            }
             // unlock tables
+            
             // update log
             // send data to other database
          //   connection.close();
@@ -80,6 +97,19 @@ public class Transaction {
             }
         }*/
         return committed;
+    }
+    
+    public void commitNodes(GenericObject object){
+        try {
+            connection.commit();
+        } catch (SQLException ex) {
+            try {
+                connection.rollback();
+            } catch (SQLException ex1) {
+                Logger.getLogger(Transaction.class.getName()).log(Level.SEVERE, null, ex1);
+            }
+            Logger.getLogger(Transaction.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public void ProcessQuery(GenericObject object){
@@ -102,22 +132,27 @@ public class Transaction {
                 client = new NodeClient(object.getIp().toString().substring(1), object);
                 clientThread = new Thread(client);
                 clientThread.start();
-            } else if(query.contains("update") && !object.isUpdated()) {
+            } else if(query.contains("update")) {
                 System.out.println("update");
                 statement.executeUpdate(query);
                System.out.println("updating");
+               if(!object.isUpdated()){
+                   System.out.println("object is not updated");
                 Sender sender = new Sender(ValidAction.UPDATE);
                 // show number of rows updated
                 if(object.getDatabase() == NodeType.CENTRAL){
                     System.out.println("Central");
+                    sender.setNode(NodeType.MARINDUQUE);
                     sender.updateNodes(NodeType.MARINDUQUE, query);
+                    sender.setNode(NodeType.PALAWAN);
                     sender.updateNodes(NodeType.PALAWAN, query);
                     System.out.println("Updated others");
                 }
                 else{
+                    sender.setNode(NodeType.CENTRAL);
                     sender.executeQuery(NodeType.CENTRAL, query);
                 }
-                
+               }
                 //int update = statement.executeUpdate(query);
                 //update other tables
                 // write in log
@@ -130,6 +165,7 @@ public class Transaction {
         } catch (SQLException ex) {
             Logger.getLogger(Transaction.class.getName()).log(Level.SEVERE, null, ex);
             try {
+                
                 connection.rollback();
             } catch (SQLException ex1) {
                 Logger.getLogger(Transaction.class.getName()).log(Level.SEVERE, null, ex1);
@@ -141,6 +177,7 @@ public class Transaction {
         String query = object.getQuery().toLowerCase();
         try {
             System.out.println("In update Nodes");
+            System.out.println("OBJECT DB USED: "+object.getDbName());
             statement = connection.prepareStatement(query);
              statement.executeUpdate(query);
         } catch (SQLException ex) {

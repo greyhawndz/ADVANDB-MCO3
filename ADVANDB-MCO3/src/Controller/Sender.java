@@ -41,18 +41,44 @@ public class Sender {
     public void endTransaction(NodeType destination){
         if(destination == NodeType.PALAWAN){
             object = new GenericObject(destination,action,"db_hpq_palawan");
+            object.setCommitted(true);
             client = new NodeClient(palIP, object);
             clientThread = new Thread(client);
             clientThread.start();
         }
         else if(destination == NodeType.MARINDUQUE){
             object = new GenericObject(destination,action,"db_hpq_marinduque");
+            object.setCommitted(true);
             client = new NodeClient(marIP, object);
             clientThread = new Thread(client);
             clientThread.start();
         }
         else if(destination == NodeType.CENTRAL){
             object = new GenericObject(destination,action,"db_hpq_central");
+            client = new NodeClient(centralIP, object);
+            clientThread = new Thread(client);
+            clientThread.start();
+        }
+    }
+    
+    public void commitNodes(NodeType destination){
+        if(destination == NodeType.PALAWAN){
+            object = new GenericObject(destination,action,"db_hpq_palawan");
+            object.setCommitted(true);
+            client = new NodeClient(palIP, object);
+            clientThread = new Thread(client);
+            clientThread.start();
+        }
+        else if(destination == NodeType.MARINDUQUE){
+            object = new GenericObject(destination,action,"db_hpq_marinduque");
+            object.setCommitted(true);
+            client = new NodeClient(marIP, object);
+            clientThread = new Thread(client);
+            clientThread.start();
+        }
+        else if(destination == NodeType.CENTRAL){
+            object = new GenericObject(destination,action,"db_hpq_central");
+            object.setCommitted(true);
             client = new NodeClient(centralIP, object);
             clientThread = new Thread(client);
             clientThread.start();

@@ -16,5 +16,6 @@ public enum ValidAction {
     SET_ISOLATION_LEVEL,
     QUERY,
     READ,
-    UPDATE
+    UPDATE,
+    COMMIT
 }
