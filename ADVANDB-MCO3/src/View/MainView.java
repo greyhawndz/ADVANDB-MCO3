@@ -23,6 +23,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import javax.swing.text.BadLocationException;
 
 /**
  *
@@ -59,7 +60,7 @@ public class MainView extends JFrame {
     private ButtonGroup node;
     private ButtonGroup iso;
     private TextArea query;
-    
+    private static JTextArea log;
     private Server server;
     private Sender sender;
     public MainView(){
@@ -114,6 +115,10 @@ public class MainView extends JFrame {
         setIsoLevel.setEnabled(false);
         executeQuery.setEnabled(false);
         
+        log = new JTextArea(25,24);
+        log.setEnabled(false);
+        log.setEditable(false);
+        log.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         query = new TextArea(5,10);
         query.setEnabled(false);
         
@@ -159,7 +164,8 @@ public class MainView extends JFrame {
 //        resultPanel.setBackground(Color.red);
         
         JScrollPane scroll2 = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        
+        JScrollPane scroll3 = new JScrollPane(log, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scroll3.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         transactionPanel.add(begin);
         transactionPanel.add(end);
         nodePanel.add(central);
@@ -176,6 +182,7 @@ public class MainView extends JFrame {
         querySub.add(executeQuery);
         queryPanel.add(scroll);
         queryPanel.add(querySub);
+        resultPanel.add(scroll3);
         resultPanel.add(scroll2);
         mainPanel.add(transactionPanel);
         mainPanel.add(queryPanel);
@@ -201,10 +208,15 @@ public class MainView extends JFrame {
                 serial.setEnabled(true);
                 query.setEnabled(true);
                 begin.setEnabled(false);
+                log.setEnabled(true);
                 sender = new Sender();
-               // Sender sender = new Sender(ValidAction.START_TRANSACTION);
-              //  sender.startTransaction(SelectNode());
-               
+                try {
+                    // Sender sender = new Sender(ValidAction.START_TRANSACTION);
+                    //  sender.startTransaction(SelectNode());
+                    log.getDocument().insertString(0,"Start Transaction\n" , null);
+                } catch (BadLocationException ex) {
+                    Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 sender.setNode(SelectNode());
                 sender.setIso(SelectIso());
                 System.out.println("clicked");
@@ -228,10 +240,17 @@ public class MainView extends JFrame {
                 readCom.setEnabled(false);
                 readRe.setEnabled(false);
                 serial.setEnabled(false);
-                
+                log.setEnabled(false);
              //   Sender sender = new Sender(ValidAction.END_TRANSACTION);
             //    sender.endTransaction(SelectNode());
                   sender.endTransaction();
+                  try {
+                    // Sender sender = new Sender(ValidAction.START_TRANSACTION);
+                    //  sender.startTransaction(SelectNode());
+                    log.getDocument().insertString(0,"End Transaction\n" , null);
+                } catch (BadLocationException ex) {
+                    Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
             
         });
@@ -244,6 +263,13 @@ public class MainView extends JFrame {
              //   Sender sender = new Sender(ValidAction.SET_NODE);
              //   sender.setNode(SelectNode());
                 sender.setNode(SelectNode());
+                try {
+                    // Sender sender = new Sender(ValidAction.START_TRANSACTION);
+                    //  sender.startTransaction(SelectNode());
+                    log.getDocument().insertString(0,"Set Node to: " +SelectNode().toString() +"\n" , null);
+                } catch (BadLocationException ex) {
+                    Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         
         
@@ -257,6 +283,13 @@ public class MainView extends JFrame {
              //  Sender sender = new Sender(ValidAction.SET_ISOLATION_LEVEL);
              //  sender.setIsolationLevel(SelectNode(), SelectIso());
                 sender.setIso(SelectIso());
+                 try {
+                    // Sender sender = new Sender(ValidAction.START_TRANSACTION);
+                    //  sender.startTransaction(SelectNode());
+                    log.getDocument().insertString(0,"Set Isolation Level to: " +SelectIso().toString() +"\n" , null);
+                } catch (BadLocationException ex) {
+                    Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         
         });
@@ -268,6 +301,19 @@ public class MainView extends JFrame {
              //  Sender sender = new Sender(ValidAction.QUERY);
              //  sender.executeQuery(SelectNode(), query.getText());
                 sender.sendObject(query.getText());
+                
+                try {
+                    // Sender sender = new Sender(ValidAction.START_TRANSACTION);
+                    //  sender.startTransaction(SelectNode());
+                    if(query.getText().toLowerCase().contains("select")){
+                        log.getDocument().insertString(0,"Performing Read\n" , null);
+                    }
+                    else if(query.getText().toLowerCase().contains("update")){
+                        log.getDocument().insertString(0,"Performing Write\n" , null);
+                    }
+                } catch (BadLocationException ex) {
+                    Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         
         
