@@ -14,6 +14,9 @@ import Helper.ValidAction;
 import Model.GenericObject;
 import View.MainView;
 import com.sun.rowset.CachedRowSetImpl;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -41,6 +44,7 @@ public class Transaction {
     private NodeClient client;
     private Thread clientThread;
     private String dbName;
+    private PrintWriter pw;
     
     public String getDbName() {
         return dbName;
@@ -53,11 +57,16 @@ public class Transaction {
     public void startConnection(){
         connector = DBConnector.getInstance(dbName);
         connection = connector.getConnect();
+        try {
+            pw = new PrintWriter(new FileWriter("test/log.txt"));
+        } catch (IOException ex) {
+            Logger.getLogger(Transaction.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public void startTransaction() {
         System.out.println("Transaciton started");
-     
+        pw.write("start\n");
         
         try {
             
@@ -77,6 +86,8 @@ public class Transaction {
             connection.commit();
             committed = true;
             
+            pw.write("commit");
+            
             System.out.println("OBJECT DATABASE: " +object.getDatabase());
             
             if(object.getDatabase() == NodeType.CENTRAL){
@@ -91,6 +102,7 @@ public class Transaction {
                 sender.setNode(NodeType.CENTRAL);
                 sender.commitNodes(NodeType.CENTRAL);
             }
+            pw.close();
             // unlock tables
             
             // update log
@@ -99,6 +111,7 @@ public class Transaction {
         } catch (SQLException ex) {
             try {
                 connection.rollback();
+                pw.close();
                 Logger.getLogger(Transaction.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SQLException ex1) {
                 Logger.getLogger(Transaction.class.getName()).log(Level.SEVERE, null, ex1);
@@ -155,6 +168,7 @@ public class Transaction {
             } else if(query.contains("update")) {
                 System.out.println("update");
                 statement.executeUpdate(query);
+                pw.write("write "+query+"\n");
                System.out.println("updating");
                if(!object.isUpdated()){
                    System.out.println("object is not updated");
@@ -180,6 +194,7 @@ public class Transaction {
             } else if(query.contains("insert into")) {
                 int insert = statement.executeUpdate(query);
                 // write in log
+                pw.write("write "+query+"\n");
             } else {
                 // error due to invalid statement
             }
@@ -205,7 +220,7 @@ public class Transaction {
             System.out.println("In update Nodes");
             System.out.println("OBJECT DB USED: "+object.getDbName());
             statement = connection.prepareStatement(query);
-             statement.executeUpdate(query);
+            statement.executeUpdate(query);
         } catch (SQLException ex) {
             Logger.getLogger(Transaction.class.getName()).log(Level.SEVERE, null, ex);
         }
