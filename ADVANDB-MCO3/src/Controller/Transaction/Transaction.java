@@ -12,6 +12,7 @@ import Helper.IsolationLevel;
 import Helper.NodeType;
 import Helper.ValidAction;
 import Model.GenericObject;
+import View.MainView;
 import com.sun.rowset.CachedRowSetImpl;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -113,6 +114,12 @@ public class Transaction {
     }
     
     public void ProcessQuery(GenericObject object){
+        setIsolationLevel(MainView.SelectIso());
+        try {
+            connection.setAutoCommit(false);
+        } catch (SQLException ex) {
+            Logger.getLogger(Transaction.class.getName()).log(Level.SEVERE, null, ex);
+        }
         String query = object.getQuery().toLowerCase();
         try {
             statement = connection.prepareStatement(query);
@@ -174,6 +181,11 @@ public class Transaction {
     }
     
     public void updateNodes(GenericObject object){
+        try {
+            connection.setAutoCommit(false);
+        } catch (SQLException ex) {
+            Logger.getLogger(Transaction.class.getName()).log(Level.SEVERE, null, ex);
+        }
         String query = object.getQuery().toLowerCase();
         try {
             System.out.println("In update Nodes");
@@ -196,6 +208,11 @@ public class Transaction {
     
     //sets the iso level of the transaction
     public void setIsolationLevel(IsolationLevel iso){
+        try {
+            connection.setAutoCommit(false);
+        } catch (SQLException ex) {
+            Logger.getLogger(Transaction.class.getName()).log(Level.SEVERE, null, ex);
+        }
         try {
             switch (iso) {
                 case READ_UNCOMMITTED: connection.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);

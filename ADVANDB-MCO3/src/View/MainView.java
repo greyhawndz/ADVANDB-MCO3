@@ -51,10 +51,10 @@ public class MainView extends JFrame {
     private JRadioButton central;
     private JRadioButton palawan;
     private JRadioButton marinduque;
-    private JRadioButton readUn;
-    private JRadioButton readCom;
-    private JRadioButton readRe;
-    private JRadioButton serial;
+    private static JRadioButton readUn;
+    private static JRadioButton readCom;
+    private static JRadioButton readRe;
+    private static JRadioButton serial;
     
     private ButtonGroup node;
     private ButtonGroup iso;
@@ -286,7 +286,7 @@ public class MainView extends JFrame {
         }
     }
     
-    public IsolationLevel SelectIso(){
+    public static IsolationLevel SelectIso(){
         if(readUn.isSelected()){
             return IsolationLevel.READ_UNCOMMITTED;
         }

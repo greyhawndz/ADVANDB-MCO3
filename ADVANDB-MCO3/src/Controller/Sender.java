@@ -25,9 +25,9 @@ import javax.swing.table.DefaultTableModel;
  */
 public class Sender {
     private GenericObject object;
-    private String centralIP = "localhost";
-    private String palIP = "localhost";
-    private String marIP = "localhost";
+    private String centralIP = "10.100.193.228";
+    private String palIP = "10.100.214.58";
+    private String marIP = "10.100.216.188";
     private NodeClient client;
     private Thread clientThread;
     private ValidAction action;
