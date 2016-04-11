@@ -57,8 +57,12 @@ public class Transaction {
     
     public void startTransaction() {
         System.out.println("Transaciton started");
+     
+        
         try {
+            
             connection.setAutoCommit(false);
+            
         } catch (SQLException ex) {
             Logger.getLogger(Transaction.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -66,7 +70,8 @@ public class Transaction {
     
     public boolean closeTransaction(GenericObject object) {
         boolean committed = false;
-        Sender sender = new Sender(ValidAction.COMMIT);
+        Sender sender = new Sender();
+        sender.setAction(ValidAction.COMMIT);
         try {
             // listen to other nodes before commit
             connection.commit();
@@ -153,7 +158,8 @@ public class Transaction {
                System.out.println("updating");
                if(!object.isUpdated()){
                    System.out.println("object is not updated");
-                Sender sender = new Sender(ValidAction.UPDATE);
+                Sender sender = new Sender();
+                sender.setAction(ValidAction.UPDATE);
                 // show number of rows updated
                 if(object.getDatabase() == NodeType.CENTRAL){
                     System.out.println("Central");

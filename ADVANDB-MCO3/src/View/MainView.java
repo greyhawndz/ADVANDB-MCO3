@@ -61,8 +61,9 @@ public class MainView extends JFrame {
     private TextArea query;
     
     private Server server;
+    private Sender sender;
     public MainView(){
-        
+        sender = new Sender();
         try {
             server = new Server();
             Thread serverThread = new Thread(server);
@@ -200,7 +201,7 @@ public class MainView extends JFrame {
                 serial.setEnabled(true);
                 query.setEnabled(true);
                 begin.setEnabled(false);
-                Sender sender = new Sender(ValidAction.START_TRANSACTION);
+               // Sender sender = new Sender(ValidAction.START_TRANSACTION);
                 sender.startTransaction(SelectNode());
                 System.out.println("clicked");
             }
@@ -224,7 +225,7 @@ public class MainView extends JFrame {
                 readRe.setEnabled(false);
                 serial.setEnabled(false);
                 
-                Sender sender = new Sender(ValidAction.END_TRANSACTION);
+             //   Sender sender = new Sender(ValidAction.END_TRANSACTION);
                 sender.endTransaction(SelectNode());
                
             }
@@ -236,7 +237,7 @@ public class MainView extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
               //  transaction.setNode(SelectNode());
-                Sender sender = new Sender(ValidAction.SET_NODE);
+             //   Sender sender = new Sender(ValidAction.SET_NODE);
                 sender.setNode(SelectNode());
             }
         
@@ -248,7 +249,7 @@ public class MainView extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-               Sender sender = new Sender(ValidAction.SET_ISOLATION_LEVEL);
+             //  Sender sender = new Sender(ValidAction.SET_ISOLATION_LEVEL);
                sender.setIsolationLevel(SelectNode(), SelectIso());
             }
         
@@ -258,7 +259,7 @@ public class MainView extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-               Sender sender = new Sender(ValidAction.QUERY);
+             //  Sender sender = new Sender(ValidAction.QUERY);
                sender.executeQuery(SelectNode(), query.getText());
             }
         

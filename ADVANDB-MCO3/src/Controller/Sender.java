@@ -34,16 +34,14 @@ public class Sender {
     private ValidAction action;
     
     
-    public Sender(ValidAction action){
-        this.action = action;
-        System.out.println("ACTION: " +action);
-    }
+    
     
     public void endTransaction(NodeType destination){
+        action = ValidAction.END_TRANSACTION;
         if(destination == NodeType.PALAWAN){
             object = new GenericObject(destination,action,"db_hpq_palawan");
             object.setCommitted(true);
-            object.setIso(MainView.SelectIso());
+          //  object.setIso(MainView.SelectIso());
             client = new NodeClient(palIP, object);
             clientThread = new Thread(client);
             clientThread.start();
@@ -51,14 +49,14 @@ public class Sender {
         else if(destination == NodeType.MARINDUQUE){
             object = new GenericObject(destination,action,"db_hpq_marinduque");
             object.setCommitted(true);
-            object.setIso(MainView.SelectIso());
+          //  object.setIso(MainView.SelectIso());
             client = new NodeClient(marIP, object);
             clientThread = new Thread(client);
             clientThread.start();
         }
         else if(destination == NodeType.CENTRAL){
             object = new GenericObject(destination,action,"db_hpq_central");
-            object.setIso(MainView.SelectIso());
+         //   object.setIso(MainView.SelectIso());
             client = new NodeClient(centralIP, object);
             clientThread = new Thread(client);
             clientThread.start();
@@ -66,9 +64,10 @@ public class Sender {
     }
     
     public void commitNodes(NodeType destination){
+        action = ValidAction.COMMIT;
         if(destination == NodeType.PALAWAN){
             object = new GenericObject(destination,action,"db_hpq_palawan");
-            object.setIso(MainView.SelectIso());
+        //    object.setIso(MainView.SelectIso());
             object.setCommitted(true);
             client = new NodeClient(palIP, object);
             clientThread = new Thread(client);
@@ -93,24 +92,25 @@ public class Sender {
     }
     
     public void executeQuery(NodeType destination, String query){
+        action = ValidAction.QUERY;
         System.out.println("executing query.....");
         if(destination == NodeType.PALAWAN){
             object = new GenericObject(destination, query, false,action, "db_hpq_palawan");
-            object.setIso(MainView.SelectIso());
+         //   object.setIso(MainView.SelectIso());
             client = new NodeClient(palIP, object);
             clientThread = new Thread(client);
             clientThread.start();
         }
         else if(destination == NodeType.MARINDUQUE){
             object = new GenericObject(destination, query, false,action, "db_hpq_marinduque");
-            object.setIso(MainView.SelectIso());
+         //   object.setIso(MainView.SelectIso());
             client = new NodeClient(marIP, object);
             clientThread = new Thread(client);
             clientThread.start();
         }
         else if(destination == NodeType.CENTRAL){
             object = new GenericObject(destination, query, false,action, "db_hpq_central");
-            object.setIso(MainView.SelectIso());
+         //   object.setIso(MainView.SelectIso());
             client = new NodeClient(centralIP, object);
             clientThread = new Thread(client);
             clientThread.start();
@@ -118,24 +118,25 @@ public class Sender {
     }
     
     public void updateNodes(NodeType destination, String query){
+        action = ValidAction.UPDATE;
         System.out.println("executing query.....");
         if(destination == NodeType.PALAWAN){
             object = new GenericObject(destination, query, true,action, "db_hpq_palawan");
-            object.setIso(MainView.SelectIso());
+         //   object.setIso(MainView.SelectIso());
             client = new NodeClient(palIP, object);
             clientThread = new Thread(client);
             clientThread.start();
         }
         else if(destination == NodeType.MARINDUQUE){
             object = new GenericObject(destination, query, true,action, "db_hpq_marinduque");
-            object.setIso(MainView.SelectIso());
+         //   object.setIso(MainView.SelectIso());
             client = new NodeClient(marIP, object);
             clientThread = new Thread(client);
             clientThread.start();
         }
         else if(destination == NodeType.CENTRAL){
             object = new GenericObject(destination, query, true,action, "db_hpq_central");
-            object.setIso(MainView.SelectIso());
+         //   object.setIso(MainView.SelectIso());
             client = new NodeClient(centralIP, object);
             clientThread = new Thread(client);
             clientThread.start();
@@ -144,6 +145,7 @@ public class Sender {
     
     public void setIsolationLevel(NodeType destination, IsolationLevel level){
         System.out.println("Setting iso level");
+        action = ValidAction.SET_ISOLATION_LEVEL;
         if(destination == NodeType.PALAWAN){
             object = new GenericObject(destination,action,level, "db_hpq_palawan");
             object.setIso(MainView.SelectIso());
@@ -169,10 +171,10 @@ public class Sender {
     
     public void startTransaction(NodeType destination){
         System.out.println("in start transaction");
-        
+        action = ValidAction.START_TRANSACTION;
         if(destination == NodeType.PALAWAN){
             object = new GenericObject(destination,action, "db_hpq_palawan");
-            object.setIso(MainView.SelectIso());
+         //   object.setIso(MainView.SelectIso());
             client = new NodeClient(palIP,object);
             clientThread = new Thread(client);
             System.out.println("Starting transaction");
@@ -180,14 +182,14 @@ public class Sender {
         }
         else if(destination == NodeType.MARINDUQUE){
             object = new GenericObject(destination,action, "db_hpq_palawan");
-            object.setIso(MainView.SelectIso());
+         //   object.setIso(MainView.SelectIso());
             client = new NodeClient(marIP, object);
             clientThread = new Thread(client);
             clientThread.start();
         }
         else if(destination == NodeType.CENTRAL){
             object = new GenericObject(destination,action, "db_hpq_central");
-            object.setIso(MainView.SelectIso());
+         //   object.setIso(MainView.SelectIso());
             client = new NodeClient(centralIP, object);
             clientThread = new Thread(client);
             clientThread.start();
@@ -196,6 +198,7 @@ public class Sender {
     }
     
     public void setNode(NodeType destination){
+        action = ValidAction.SET_NODE;
         if(destination == NodeType.PALAWAN){
             System.out.println("SETTING NODE");
             object = new GenericObject(destination, "use db_hpq_palawan;", false, action, "db_hpq_palawan");
@@ -220,5 +223,15 @@ public class Sender {
             clientThread.start();
         }
     }
+
+    public ValidAction getAction() {
+        return action;
+    }
+
+    public void setAction(ValidAction action) {
+        this.action = action;
+    }
+    
+    
     
 }
