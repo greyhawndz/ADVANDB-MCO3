@@ -27,7 +27,7 @@ public class NodeClient implements Runnable{
     private ObjectInputStream in;
     private Socket socket;
     private GenericObject object;
-  /* 
+   
     public NodeClient(String ip, GenericObject object) {
         this.ip = ip;
         this.object = object;
@@ -42,9 +42,23 @@ public class NodeClient implements Runnable{
             e.printStackTrace();
             System.out.println("caught");
         }
-    }*/
+    }
     
-   
+    public NodeClient(String ip, GenericObject object, Socket socket) {
+        this.ip = ip;
+        this.object = object;
+        try{
+            System.out.println("Creating client");
+            this.socket = socket;
+            System.out.println("socket created");
+            //in = new ObjectInputStream(socket.getInputStream());
+            out = new ObjectOutputStream(socket.getOutputStream());
+            System.out.println("client online");
+        }catch(Exception e){
+            e.printStackTrace();
+            System.out.println("caught");
+        }
+    }
     
     public void setObject(GenericObject object) {
         this.object = object;
@@ -53,11 +67,6 @@ public class NodeClient implements Runnable{
     @Override
     public void run() {
         try {
-             System.out.println("Creating client");
-            socket = new Socket(ip,PORT_NUM);
-            System.out.println("socket created");
-            //in = new ObjectInputStream(socket.getInputStream());
-            out = new ObjectOutputStream(socket.getOutputStream());
             System.out.println("client started");
             
             out.writeObject(object);
@@ -68,13 +77,4 @@ public class NodeClient implements Runnable{
         }
         
     }
-
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-    
 }

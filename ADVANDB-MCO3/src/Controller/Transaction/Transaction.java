@@ -149,9 +149,7 @@ public class Transaction {
                 CachedRowSet cRow = new CachedRowSetImpl();
                 cRow.populate(result);
                 object.setcRow(cRow);
-                client = new NodeClient();
-                client.setIp(object.getIp().toString().substring(1));
-                client.setObject(object);
+                client = new NodeClient(object.getIp().toString().substring(1), object);
                 clientThread = new Thread(client);
                 clientThread.start();
             } else if(query.contains("update")) {
