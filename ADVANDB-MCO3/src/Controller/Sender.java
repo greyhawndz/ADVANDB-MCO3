@@ -33,6 +33,11 @@ public class Sender {
     private Thread clientThread;
     private ValidAction action;
     
+    public Sender(){
+        client = new NodeClient();
+        clientThread = new Thread(client);
+        
+    }
     
     
     
@@ -42,23 +47,23 @@ public class Sender {
             object = new GenericObject(destination,action,"db_hpq_palawan");
             object.setCommitted(true);
           //  object.setIso(MainView.SelectIso());
-            client = new NodeClient(palIP, object);
-            clientThread = new Thread(client);
+         //   client = new NodeClient(palIP, object);
+          //  clientThread = new Thread(client);
             clientThread.start();
         }
         else if(destination == NodeType.MARINDUQUE){
             object = new GenericObject(destination,action,"db_hpq_marinduque");
             object.setCommitted(true);
           //  object.setIso(MainView.SelectIso());
-            client = new NodeClient(marIP, object);
-            clientThread = new Thread(client);
+          //  client = new NodeClient(marIP, object);
+            //clientThread = new Thread(client);
             clientThread.start();
         }
         else if(destination == NodeType.CENTRAL){
             object = new GenericObject(destination,action,"db_hpq_central");
          //   object.setIso(MainView.SelectIso());
-            client = new NodeClient(centralIP, object);
-            clientThread = new Thread(client);
+            //client = new NodeClient(centralIP, object);
+            //clientThread = new Thread(client);
             clientThread.start();
         }
     }
@@ -69,24 +74,24 @@ public class Sender {
             object = new GenericObject(destination,action,"db_hpq_palawan");
         //    object.setIso(MainView.SelectIso());
             object.setCommitted(true);
-            client = new NodeClient(palIP, object);
-            clientThread = new Thread(client);
+            //client = new NodeClient(palIP, object);
+            //clientThread = new Thread(client);
             clientThread.start();
         }
         else if(destination == NodeType.MARINDUQUE){
             object = new GenericObject(destination,action,"db_hpq_marinduque");
-            object.setIso(MainView.SelectIso());
+           // object.setIso(MainView.SelectIso());
             object.setCommitted(true);
-            client = new NodeClient(marIP, object);
-            clientThread = new Thread(client);
+            //client = new NodeClient(marIP, object);
+           // clientThread = new Thread(client);
             clientThread.start();
         }
         else if(destination == NodeType.CENTRAL){
             object = new GenericObject(destination,action,"db_hpq_central");
-            object.setIso(MainView.SelectIso());
+           // object.setIso(MainView.SelectIso());
             object.setCommitted(true);
-            client = new NodeClient(centralIP, object);
-            clientThread = new Thread(client);
+           // client = new NodeClient(centralIP, object);
+           // clientThread = new Thread(client);
             clientThread.start();
         }
     }
@@ -97,22 +102,22 @@ public class Sender {
         if(destination == NodeType.PALAWAN){
             object = new GenericObject(destination, query, false,action, "db_hpq_palawan");
          //   object.setIso(MainView.SelectIso());
-            client = new NodeClient(palIP, object);
-            clientThread = new Thread(client);
+          //  client = new NodeClient(palIP, object);
+          //  clientThread = new Thread(client);
             clientThread.start();
         }
         else if(destination == NodeType.MARINDUQUE){
             object = new GenericObject(destination, query, false,action, "db_hpq_marinduque");
          //   object.setIso(MainView.SelectIso());
-            client = new NodeClient(marIP, object);
-            clientThread = new Thread(client);
+          //  client = new NodeClient(marIP, object);
+          //  clientThread = new Thread(client);
             clientThread.start();
         }
         else if(destination == NodeType.CENTRAL){
             object = new GenericObject(destination, query, false,action, "db_hpq_central");
          //   object.setIso(MainView.SelectIso());
-            client = new NodeClient(centralIP, object);
-            clientThread = new Thread(client);
+          //  client = new NodeClient(centralIP, object);
+          //  clientThread = new Thread(client);
             clientThread.start();
         }
     }
@@ -123,22 +128,22 @@ public class Sender {
         if(destination == NodeType.PALAWAN){
             object = new GenericObject(destination, query, true,action, "db_hpq_palawan");
          //   object.setIso(MainView.SelectIso());
-            client = new NodeClient(palIP, object);
-            clientThread = new Thread(client);
+          //  client = new NodeClient(palIP, object);
+          //  clientThread = new Thread(client);
             clientThread.start();
         }
         else if(destination == NodeType.MARINDUQUE){
             object = new GenericObject(destination, query, true,action, "db_hpq_marinduque");
          //   object.setIso(MainView.SelectIso());
-            client = new NodeClient(marIP, object);
-            clientThread = new Thread(client);
+          //  client = new NodeClient(marIP, object);
+          //  clientThread = new Thread(client);
             clientThread.start();
         }
         else if(destination == NodeType.CENTRAL){
             object = new GenericObject(destination, query, true,action, "db_hpq_central");
          //   object.setIso(MainView.SelectIso());
-            client = new NodeClient(centralIP, object);
-            clientThread = new Thread(client);
+         //   client = new NodeClient(centralIP, object);
+         //   clientThread = new Thread(client);
             clientThread.start();
         }
     }
@@ -149,22 +154,22 @@ public class Sender {
         if(destination == NodeType.PALAWAN){
             object = new GenericObject(destination,action,level, "db_hpq_palawan");
             object.setIso(MainView.SelectIso());
-            client = new NodeClient(palIP,object);
-            clientThread = new Thread(client);
+          //  client = new NodeClient(palIP,object);
+          //  clientThread = new Thread(client);
             clientThread.start();
         }
         else if(destination == NodeType.MARINDUQUE){
             object = new GenericObject(destination,action,level, "db_hpq_marinduque");
             object.setIso(MainView.SelectIso());
-            client = new NodeClient(marIP,object);
-            clientThread = new Thread(client);
+           // client = new NodeClient(marIP,object);
+          //  clientThread = new Thread(client);
             clientThread.start();
         }
         else if(destination == NodeType.CENTRAL){
             object = new GenericObject(destination,action,level, "db_hpq_central");
             object.setIso(MainView.SelectIso());
-            client = new NodeClient(centralIP,object);
-            clientThread = new Thread(client);
+           // client = new NodeClient(centralIP,object);
+          //  clientThread = new Thread(client);
             clientThread.start();
         }
     }
@@ -175,23 +180,23 @@ public class Sender {
         if(destination == NodeType.PALAWAN){
             object = new GenericObject(destination,action, "db_hpq_palawan");
          //   object.setIso(MainView.SelectIso());
-            client = new NodeClient(palIP,object);
-            clientThread = new Thread(client);
+          //  client = new NodeClient(palIP,object);
+          //  clientThread = new Thread(client);
             System.out.println("Starting transaction");
             clientThread.start();
         }
         else if(destination == NodeType.MARINDUQUE){
             object = new GenericObject(destination,action, "db_hpq_palawan");
          //   object.setIso(MainView.SelectIso());
-            client = new NodeClient(marIP, object);
-            clientThread = new Thread(client);
+          //  client = new NodeClient(marIP, object);
+          //  clientThread = new Thread(client);
             clientThread.start();
         }
         else if(destination == NodeType.CENTRAL){
             object = new GenericObject(destination,action, "db_hpq_central");
          //   object.setIso(MainView.SelectIso());
-            client = new NodeClient(centralIP, object);
-            clientThread = new Thread(client);
+          //  client = new NodeClient(centralIP, object);
+          //  clientThread = new Thread(client);
             clientThread.start();
         }
         System.out.println("end of start");
@@ -203,23 +208,23 @@ public class Sender {
             System.out.println("SETTING NODE");
             object = new GenericObject(destination, "use db_hpq_palawan;", false, action, "db_hpq_palawan");
             System.out.println("Client starting");
-            client = new NodeClient(palIP,object);
+          //  client = new NodeClient(palIP,object);
             System.out.println("lol");
-            clientThread = new Thread(client);
+         //   clientThread = new Thread(client);
             System.out.println("lol2");
             clientThread.start();
             System.out.println("Client started");  
         }
         else if(destination == NodeType.MARINDUQUE){
             object = new GenericObject(destination, "use db_hpq_marinduque", false, action, "db_hpq_marinduque");
-            client = new NodeClient(marIP,object);
-            clientThread = new Thread(client);
+          //  client = new NodeClient(marIP,object);
+          //  clientThread = new Thread(client);
             clientThread.start();
         }
         else if(destination == NodeType.CENTRAL){
             object = new GenericObject(destination, "use db_hpq_central", false, action, "db_hpq_central");
-            client = new NodeClient(centralIP,object);
-            clientThread = new Thread(client);
+           // client = new NodeClient(centralIP,object);
+           // clientThread = new Thread(client);
             clientThread.start();
         }
     }
